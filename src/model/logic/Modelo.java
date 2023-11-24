@@ -51,7 +51,7 @@ public class Modelo {
 
 	/**
 	 * Constructor del modelo del mundo con capacidad dada
-	 * @param tamano
+	 * tamano
 	 */
 	public Modelo(int capacidad)
 	{
@@ -70,43 +70,64 @@ public class Modelo {
 
 	/**
 	 * Requerimiento buscar dato
-	 * @param dato Dato a buscar
+	 * dato Dato a buscar
 	 * @return dato encontrado
 	 * @throws VacioException 
 	 * @throws PosException 
 	 */
 	public YoutubeVideo getElement(int i) throws PosException, VacioException
 	{
-		return (YoutubeVideo) datos.getElement( i);
+		return (YoutubeVideo) datos.getElement(i);
+	}
+
+	private Landing obtenerPrimerLanding() throws PosException, VacioException {
+		// Lógica para obtener el primer landing point
+		return (Landing) ((NodoTS) points.darListaNodos().getElement(1)).getValue();
+	}
+
+	private Country obtenerUltimoPais() throws PosException, VacioException {
+		// Lógica para obtener el último país
+		return (Country) ((NodoTS) paises.darListaNodos().getElement(paises.darListaNodos().size())).getValue();
+	}
+
+	private int obtenerNumeroConexiones() {
+		// Lógica para obtener el número total de conexiones
+		return grafo.edges().size();
+	}
+
+	private int obtenerNumeroLandingPoints() {
+		// Lógica para obtener el número total de landing points
+		return grafo.vertices().size();
+	}
+
+	private int obtenerNumeroPaises() {
+		// Lógica para obtener el número total de países
+		return paises.size();
 	}
 
 	public String toString()
 	{
 		String fragmento="Info básica:";
-		
-		fragmento+= "\n El número total de conexiones (arcos) en el grafo es: " + grafo.edges().size();
-		fragmento+="\n El número total de puntos de conexión (landing points) en el grafo: " + grafo.vertices().size();
-		fragmento+= "\n La cantidad total de países es:  " + paises.size();
-		Landing landing=null;
+		fragmento += "\n El número total de conexiones (arcos) en el grafo es: " + obtenerNumeroConexiones();
+		fragmento += "\n El número total de puntos de conexión (landing points) en el grafo: " + obtenerNumeroLandingPoints();
+		fragmento += "\n La cantidad total de países es:  " + obtenerNumeroPaises();
 		try 
 		{
-			landing = (Landing) ((NodoTS) points.darListaNodos().getElement(1)).getValue();
-			fragmento+= "\n Info primer landing point " + "\n Identificador: " + landing.getId() + "\n Nombre: " + landing.getName()
-			+ " \n Latitud " + landing.getLatitude() + " \n Longitud" + landing.getLongitude();
-			
-			Country pais= (Country) ((NodoTS) paises.darListaNodos().getElement(paises.darListaNodos().size())).getValue();
-			
-			fragmento+= "\n Info último país: " + "\n Capital: "+ pais.getCapitalName() + "\n Población: " + pais.getPopulation()+
-			"\n Usuarios: "+ pais.getUsers();
+			Landing landing = obtenerPrimerLanding();
+			Country pais = obtenerUltimoPais();
+			fragmento += "\n Info primer landing point " + "\n Identificador: " + landing.getId() + "\n Nombre: " +
+					landing.getName() + " \n Latitud " + landing.getLatitude() + " \n Longitud" +
+					landing.getLongitude();
+			fragmento += "\n Info último país: " + "\n Capital: " + pais.getCapitalName() + "\n Población: " +
+					pais.getPopulation() + "\n Usuarios: " + pais.getUsers();
+
 		} 
 		catch (PosException | VacioException e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return fragmento;
-
 	}
 	
 	

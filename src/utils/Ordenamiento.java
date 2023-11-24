@@ -9,80 +9,94 @@ import model.data_structures.VacioException;
 
 public final class Ordenamiento <T extends Comparable <T>>
 {
-
-	public void ordenarSeleccion(ILista<T> lista, Comparator<T> criterio, boolean ascendente ) throws PosException, VacioException
+	public void ordenarSeleccion(ILista<T> lista, Comparator<T> criterio, boolean ascendente) throws PosException, VacioException
 	{
-		for (int i=1; i<=lista.size(); i++)
+		for (int i = 1; i <= lista.size(); i++)
 		{
-			int posMayorMenor= i;
-			
-			for (int j=i+1; j<=lista.size(); j++)
-			{
-				int factorComparacion= (ascendente ? 1:-1)* criterio.compare(lista.getElement(posMayorMenor), lista.getElement(j));
-				if (factorComparacion > 0)
-				{
-					posMayorMenor=j;
-				}
-			}
+			int posMayorMenor = encontrarPosMayorMenor(lista, criterio, ascendente, i);
+
 			lista.exchange(posMayorMenor, i);
 		}
 	}
-	
-	public void ordenarInsercion(ILista<T> lista, Comparator<T> criterio, boolean ascendente ) throws PosException, VacioException
+
+	private int encontrarPosMayorMenor(ILista<T> lista, Comparator<T> criterio, boolean ascendente, int start) throws PosException, VacioException
 	{
-		
-		for (int i=2; i<= lista.size(); i++)
+		int posMayorMenor = start;
+
+		for (int j = start + 1; j <= lista.size(); j++)
 		{
-			boolean enPosicion=false;
-			
-			for (int j=i; j>1 && !enPosicion; j--)
+			int factorComparacion = (ascendente ? 1 : -1) * criterio.compare(lista.getElement(posMayorMenor), lista.getElement(j));
+			if (factorComparacion > 0)
 			{
-				int factorComparacion= (ascendente ?1:-1) * criterio.compare(lista.getElement(j), lista.getElement(j-1));
-				if (factorComparacion<0)
+				posMayorMenor = j;
+			}
+		}
+
+		return posMayorMenor;
+	}
+
+	public void ordenarInsercion(ILista<T> lista, Comparator<T> criterio, boolean ascendente) throws PosException, VacioException
+	{
+		for (int i = 2; i <= lista.size(); i++)
+		{
+			insertarElementoEnPosicion(lista, criterio, ascendente, i);
+		}
+	}
+
+	private void insertarElementoEnPosicion(ILista<T> lista, Comparator<T> criterio, boolean ascendente, int position) throws PosException, VacioException
+	{
+		boolean enPosicion = false;
+
+		for (int j = position; j > 1 && !enPosicion; j--)
+		{
+			int factorComparacion = (ascendente ? 1 : -1) * criterio.compare(lista.getElement(j), lista.getElement(j - 1));
+			if (factorComparacion < 0)
+			{
+				lista.exchange(j, j - 1);
+			}
+			else
+			{
+				enPosicion = true;
+			}
+		}
+	}
+
+	public void ordenarShell(ILista<T> lista, Comparator<T> criterio, boolean ascendente) throws PosException, VacioException
+	{
+		int n = lista.size();
+		int h = 1;
+
+		while (h < n / 3)
+		{
+			h = 3 * h + 1;
+		}
+
+		while (h >= 1)
+		{
+			aplicarShellSort(lista, criterio, ascendente, h);
+			h /= 3;
+		}
+	}
+
+	private void aplicarShellSort(ILista<T> lista, Comparator<T> criterio, boolean ascendente, int h) throws PosException, VacioException
+	{
+		for (int i = h + 1; i <= lista.size(); i++)
+		{
+			boolean enPosicion = false;
+
+			for (int j = i; j > h && !enPosicion; j -= h)
+			{
+				int factorComparacion = (ascendente ? 1 : -1) * criterio.compare(lista.getElement(j), lista.getElement(j - h));
+
+				if (factorComparacion < 0)
 				{
-					lista.exchange(j, j-1);
+					lista.exchange(j, j - h);
 				}
 				else
 				{
-					enPosicion=true;
+					enPosicion = true;
 				}
 			}
-		}
-	
-	}
-	
-	public void ordenarShell (ILista<T> lista, Comparator<T> criterio, boolean ascendente ) throws PosException, VacioException
-	{
-		int n=lista.size();
-		int h=1;
-		
-		while(h<(n/3))
-		{
-			h=3*h +1;
-		}
-		
-		while(h>=1)
-		{
-			for(int i=h+1; i<=n; i++)
-			{
-				boolean enPosicion= false;
-				
-				for(int j=i; j>h && !enPosicion; j-=h)
-				{
-					int factorComparacion= (ascendente ?1:-1)*criterio.compare(lista.getElement(j), lista.getElement(j-h));
-					
-					if (factorComparacion<0)
-					{
-						lista.exchange(j, j-h);
-					}
-					else
-					{
-						enPosicion=true;
-					}
-				}
-			}
-			
-			h/=3;
 		}
 	}
 	
@@ -120,64 +134,60 @@ public final class Ordenamiento <T extends Comparable <T>>
 		
 		return follower;
 	}
-	
+
 	public final void ordenarMergeSort(ILista<T> lista, Comparator<T> criterio, boolean ascendente) throws PosException, VacioException, NullException
 	{
 		int size = lista.size();
-		if(size > 1)
+		if (size > 1)
 		{
-			int mid = size/2;
-			//Se divide la lista original en dos partes, izquierda y derecha, desde el punto mid.
+			int mid = size / 2;
 			ILista<T> leftList = lista.sublista(1, mid);
-			ILista<T> rightList = lista.sublista(mid+1, size - mid);
+			ILista<T> rightList = lista.sublista(mid + 1, size - mid);
 
-			//Se hace el llamado recursivo con la lista izquierda y derecha.
 			ordenarMergeSort(leftList, criterio, ascendente);
 			ordenarMergeSort(rightList, criterio, ascendente);
-			
-			//i recorre la lista de la izquierda, j la derecha y k la lista original.
-			int i,j,k;
-			i=j=k= 1;
-			
-			int leftelements = leftList.size();
-			int rightelements = rightList.size();
-			
-			while(i <= leftelements && j <= rightelements)
-			{
-				T elemi = leftList.getElement(i);
-				T elemj = rightList.getElement(j);
-				//Compara y ordena los elementos
-				int factorComparacion = (ascendente?1:-1) * criterio.compare(elemi, elemj);
-				
-				if(factorComparacion <= 0) 
-				{
-					lista.changeInfo(k, elemi);
-					i++;
-				}
-				else
-				{
-					lista.changeInfo(k, elemj);
-					j++;
-				}
-				k++;
-			}
-			
-			//Agrega los elementos que no se compararon y están ordenados
-			while(i <= leftelements)
-			{
-				lista.changeInfo(k, leftList.getElement(i));
-				i++;
-				k++;
-			}
-			
-			while(j <= rightelements)
-			{
-				lista.changeInfo(k, rightList.getElement(j));
-				j++;
-				k++;
-			}
+
+			merge(lista, leftList, rightList, criterio, ascendente);
 		}
 	}
 
-	
+	private void merge(ILista<T> lista, ILista<T> leftList, ILista<T> rightList, Comparator<T> criterio, boolean ascendente) throws PosException, VacioException, NullException
+	{
+		int i = 1, j = 1, k = 1;
+		int leftElements = leftList.size();
+		int rightElements = rightList.size();
+
+		while (i <= leftElements && j <= rightElements)
+		{
+			T elemi = leftList.getElement(i);
+			T elemj = rightList.getElement(j);
+			int factorComparacion = (ascendente ? 1 : -1) * criterio.compare(elemi, elemj);
+
+			if (factorComparacion <= 0)
+			{
+				lista.changeInfo(k, elemi);
+				i++;
+			}
+			else
+			{
+				lista.changeInfo(k, elemj);
+				j++;
+			}
+			k++;
+		}
+
+		while (i <= leftElements)
+		{
+			lista.changeInfo(k, leftList.getElement(i));
+			i++;
+			k++;
+		}
+
+		while (j <= rightElements)
+		{
+			lista.changeInfo(k, rightList.getElement(j));
+			j++;
+			k++;
+		}
+	}
 }

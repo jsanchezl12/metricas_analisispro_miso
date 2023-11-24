@@ -29,6 +29,66 @@ public class Controller<T> {
 	{
 		view = new View();
 	}
+
+	private void cargaDatos(){
+		view.printMessage("--------- \nCargar datos");
+		modelo = new Modelo(1);
+		try
+		{
+			modelo.cargar();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		view.printModelo(modelo);
+	}
+
+	private void connectedComponents(Scanner lector){
+		view.printMessage("--------- \nIngrese el nombre del primer punto de conexión");
+		String punto1= lector.next();
+		lector.nextLine();
+
+		view.printMessage("--------- \nIngrese el nombre del segundo punto de conexión");
+		String punto2= lector.next();
+		lector.nextLine();
+
+		String res1=modelo.req1String(punto1, punto2);
+		view.printMessage(res1);
+	}
+
+	private void interconnectionLandings(){
+		String res2= modelo.req2String();
+		view.printMessage(res2);
+	}
+
+	private void minRoute(Scanner lector){
+		view.printMessage("--------- \nIngrese el nombre del primer país");
+		String pais1= lector.next();
+		lector.nextLine();
+
+		view.printMessage("--------- \nIngrese el nombre del segundo país");
+		String pais2= lector.next();
+		lector.nextLine();
+
+		String res3= modelo.req3String(pais1, pais2);
+		view.printMessage(res3);
+	}
+	private void minExpansion(){
+		String res4= modelo.req4String();
+		view.printMessage(res4);
+	}
+
+	private void conexionErrors(Scanner lector){
+		view.printMessage("--------- \nIngrese el nombre del punto de conexión");
+		String landing= lector.next();
+		lector.nextLine();
+		String res5= modelo.req5String(landing);
+		view.printMessage(res5);
+	}
+
+	private void exit(){
+		view.printMessage("--------- \n Hasta pronto !! \n---------");
+	}
 		
 	public void run() 
 	{
@@ -42,63 +102,28 @@ public class Controller<T> {
 			int option = lector.nextInt();
 			switch(option){
 			case 1:
-				view.printMessage("--------- \nCargar datos");
-				modelo = new Modelo(1); 
-				try 
-				{
-					modelo.cargar();
-				} catch (IOException e) {
-
-					e.printStackTrace();
-				}
-				view.printModelo(modelo);	
-
+				cargaDatos();
 				break;
 				
 			case 2:
-				view.printMessage("--------- \nIngrese el nombre del primer punto de conexión");
-				String punto1= lector.next();
-				lector.nextLine();
-				
-				view.printMessage("--------- \nIngrese el nombre del segundo punto de conexión");
-				String punto2= lector.next();
-				lector.nextLine();
-				
-				String res1=modelo.req1String(punto1, punto2);
-				view.printMessage(res1);
-				
+				connectedComponents(lector);
 				break;
 				
 			case 3:
-				String res2= modelo.req2String();
-				view.printMessage(res2);
+				interconnectionLandings();
 				break;
 				
 			case 4:
-				view.printMessage("--------- \nIngrese el nombre del primer país");
-				String pais1= lector.next();
-				lector.nextLine();
-				
-				view.printMessage("--------- \nIngrese el nombre del segundo país");
-				String pais2= lector.next();
-				lector.nextLine();
-				
-				String res3= modelo.req3String(pais1, pais2);
-				view.printMessage(res3);
+				minRoute(lector);
 				break;
 			case 5:
-				String res4= modelo.req4String();
-				view.printMessage(res4);
+				minExpansion();
 				break;
 			case 6:
-				view.printMessage("--------- \nIngrese el nombre del punto de conexión");
-				String landing= lector.next();
-				lector.nextLine();
-				String res5= modelo.req5String(landing);
-				view.printMessage(res5);
+				conexionErrors(lector);
 				break;
 			case 7:
-				view.printMessage("--------- \n Hasta pronto !! \n---------"); 
+				exit();
 				lector.close();
 				fin = true;
 				break;
