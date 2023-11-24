@@ -139,17 +139,12 @@ public class ListaEncadenada<T extends Comparable<T>> implements ILista<T> {
                 penultimo.disconnectNext(penultimo);
                 last = penultimo;
                 size--;
-
             }
-
         } else {
             ultimo = first;
             first = null;
         }
-
         return ultimo.getInfo();
-
-
     }
 
     public T deleteElement(int pos) throws PosException, VacioException {
@@ -179,9 +174,7 @@ public class ListaEncadenada<T extends Comparable<T>> implements ILista<T> {
             retorno = actual.getInfo();
             anterior.disconnectNext(anterior);
         }
-
         size--;
-
         return retorno;
     }
 
@@ -245,30 +238,27 @@ public class ListaEncadenada<T extends Comparable<T>> implements ILista<T> {
         return pos + 1;
     }
 
-    public void exchange(int pos1, int pos2) throws PosException, VacioException {
-        if (pos1 > size || pos2 > size || pos1 < 1 || pos2 < 1) {
-            throw new PosException(posEx);
-        } else if (isEmpty()) {
-            throw new VacioException(emptyEx);
-        } else if (pos1 != pos2 && size > 1) {
-
-            Nodo<T> actual1 = first;
-
-            while (actual1.getNext() != null && !actual1.getInfo().equals(getElement(pos1))) {
-                actual1 = actual1.getNext();
+    private Nodo<T> getNodeAtPosition(int pos) throws PosException {
+        Nodo<T> actual = first;
+        for (int i = 1; i < pos; i++) {
+            if (actual == null) {
+                throw new PosException(posEx);
             }
-
-            Nodo<T> actual2 = first;
-
-            while (actual2.getNext() != null && !actual2.getInfo().equals(getElement(pos2))) {
-                actual2 = actual2.getNext();
-            }
-
-            Nodo<T> cambiado = actual1;
-            actual1.change(actual2.getInfo());
-            actual2.change(cambiado.getInfo());
-
+            actual = actual.getNext();
         }
+        return actual;
+    }
+    public void exchange(int pos1, int pos2) throws PosException, VacioException {
+        if (pos1 < 1 || pos1 > size || pos2 < 1 || pos2 > size) {
+            throw new PosException(posEx);
+        } else if (isEmpty() || pos1 == pos2) {
+            return;  // No hay cambios necesarios
+        }
+        Nodo<T> actual1 = getNodeAtPosition(pos1);
+        Nodo<T> actual2 = getNodeAtPosition(pos2);
+        T tempInfo = actual1.getInfo();
+        actual1.change(actual2.getInfo());
+        actual2.change(tempInfo);
     }
 
     public void changeInfo(int pos, T element) throws PosException, VacioException, NullException {
@@ -283,11 +273,8 @@ public class ListaEncadenada<T extends Comparable<T>> implements ILista<T> {
             for (int i = 0; i < pos - 1; i++) {
                 actual = actual.getNext();
             }
-
             actual.change(element);
-
         }
-
     }
 
     public ILista<T> sublista(int pos, int numElementos) throws PosException, VacioException, NullException {
@@ -299,16 +286,13 @@ public class ListaEncadenada<T extends Comparable<T>> implements ILista<T> {
             return this;
         } else {
             ILista<T> copia = new ListaEncadenada<>();
-
             int contador = pos;
             for (int i = 0; i < numElementos; i++) {
                 copia.insertElement(this.getElement(contador), i + 1);
                 contador++;
             }
-
             return copia;
         }
-
     }
 
     @Override
