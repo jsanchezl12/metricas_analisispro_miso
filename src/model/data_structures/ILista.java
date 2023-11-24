@@ -33,7 +33,7 @@ public interface ILista<T extends Comparable <T>> extends Comparable <ILista<T>>
 	/**
 	 * Crear una sublista de la lista original (this).
 	 * Los elementos se toman en el mismo orden como aparecen en la lista original (this).
-	 * @param número de elementos que contendrá la sublista. Si el número es superior al tamaño
+	 *  número de elementos que contendrá la sublista. Si el número es superior al tamaño
 	 * original de la lista, se obtiene una copia de la lista original.
 	* @return sublista creada con la misma representación de la lista original (this).
 	 * @throws VacioException 

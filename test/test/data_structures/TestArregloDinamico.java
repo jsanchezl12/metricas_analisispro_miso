@@ -9,8 +9,8 @@ import org.junit.Test;
 
 public class TestArregloDinamico {
 
-	private ArregloDinamico arreglo;
-	private static int TAMANO=100;
+	ArregloDinamico arreglo;
+	int TAMANO=100;
 	
 	@Before
 	public void setUp1() {

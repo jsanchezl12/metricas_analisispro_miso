@@ -9,7 +9,7 @@ import org.junit.Test;
 public class TestModelo<T> {
 	
 	private Modelo modelo;
-	private static int CAPACIDAD=100;
+	int CAPACIDAD=100;
 	
 	@Before
 	public void setUp1() {

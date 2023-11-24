@@ -7,7 +7,7 @@ public class TablaHashSeparteChaining <K extends Comparable<K>, V extends Compar
 	private ILista<ILista<NodoTS<K,V>>> listaNodos;
 	private int tamanoAct;
 	private int tamanoTabla;
-	private double minicial;
+	double minicial;
 	private double cantidadRehash;
 
 	public TablaHashSeparteChaining(int tamInicial) {
