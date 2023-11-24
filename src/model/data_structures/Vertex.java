@@ -16,7 +16,6 @@ public class Vertex<K extends Comparable<K>,V  extends Comparable <V>> implement
 		this.arcos= new ArregloDinamico<Edge<K, V>>(1);
 	}
 
-	
 	public K getId()
 	{
 		return key;
@@ -100,56 +99,50 @@ public class Vertex<K extends Comparable<K>,V  extends Comparable <V>> implement
 		
 		return retorno; 
 	}
-	
+
 	public ILista<Edge<K,V>> edges()
 	{
 		return arcos;
 	}
-	
-	public void bfs()
-	{
-		ColaEncadenada<Vertex<K, V>> cola= new ColaEncadenada<Vertex<K, V>>();
+
+	public void bfs() {
+		ColaEncadenada<Vertex<K, V>> cola = new ColaEncadenada<>();
 		mark();
 		cola.enqueue(this);
-		while(cola.peek() !=null)
-		{
-			Vertex<K, V> actual= cola.dequeue();
-			for(int i=1; i<=actual.arcos.size(); i++)
-			{
-				Vertex<K, V> dest;
-				try 
-				{
-					dest = actual.edges().getElement(i).getDestination();
-					if(dest.marked)
-					{
-						mark();
-						cola.enqueue(dest);
-					}
-				} 
-				catch (PosException | VacioException e) 
-				{
-					e.printStackTrace();
+
+		while (cola.peek() != null) {
+			Vertex<K, V> actual = cola.dequeue();
+			processBFSVertex(actual, cola);
+		}
+	}
+
+	private void processBFSVertex(Vertex<K, V> vertex, ColaEncadenada<Vertex<K, V>> cola) {
+		for (int i = 1; i <= vertex.arcos.size(); i++) {
+			try {
+				Vertex<K, V> dest = vertex.edges().getElement(i).getDestination();
+				if (!dest.marked) {
+					mark();
+					cola.enqueue(dest);
 				}
+			} catch (PosException | VacioException e) {
+				e.printStackTrace();
 			}
 		}
 	}
-	
-	public void dfs(Edge<K, V> edgeTo)
-	{
+
+	public void dfs(Edge<K, V> edgeTo) {
 		mark();
-		for(int i=1; i<=arcos.size(); i++)
-		{
-			Vertex<K, V> dest;
-			try 
-			{
-				dest = arcos.getElement(i).getDestination();
-				if(!dest.marked)
-				{
+		processDFSVertex(edgeTo);
+	}
+
+	private void processDFSVertex(Edge<K, V> edgeTo) {
+		for (int i = 1; i <= arcos.size(); i++) {
+			try {
+				Vertex<K, V> dest = arcos.getElement(i).getDestination();
+				if (!dest.marked) {
 					dest.dfs(arcos.getElement(i));
 				}
-			} 
-			catch (PosException | VacioException e) 
-			{
+			} catch (PosException | VacioException e) {
 				e.printStackTrace();
 			}
 		}
@@ -291,30 +284,24 @@ public class Vertex<K extends Comparable<K>,V  extends Comparable <V>> implement
 	public void relaxDijkstra(ITablaSimbolos<K, NodoTS<Float, Edge<K, V>>> tablaResultado, MinPQIndexada<Float, K, Edge<K, V>> colaIndexada, Vertex<K, V> actual, float pesoAcumulado)
 	{
 		actual.mark();
-		for(int i=1; i<=actual.edges().size(); i++)
-		{
+		for(int i=1; i<=actual.edges().size(); i++){
 			Edge<K, V> arcoActual;
 			try 
 			{
 				arcoActual = actual.edges().getElement(i);
 				Vertex<K, V> destino= arcoActual.getDestination();
 				float peso= arcoActual.getWeight();
-				if(!destino.getMark())
-				{
+				if(!destino.getMark()) {
 					NodoTS<Float, Edge<K, V>>llegadaDestino= tablaResultado.get(destino.getId());
-					
-					if(llegadaDestino== null)
-					{
+					if(llegadaDestino== null) {
 						tablaResultado.put(destino.getId(), new NodoTS<Float, Edge<K, V>>(pesoAcumulado + peso, arcoActual));
 						colaIndexada.insert(peso+ pesoAcumulado, destino.getId(), arcoActual);
 						
 					}
-					else if(llegadaDestino.getKey()>(pesoAcumulado + peso))
-					{
+					else if(llegadaDestino.getKey()>(pesoAcumulado + peso)) {
 						llegadaDestino.setKey(pesoAcumulado + peso);
 						llegadaDestino.setValue(arcoActual);
 						colaIndexada.changePriority(destino.getId(), pesoAcumulado + peso, arcoActual);
-						
 					}
 				}
 			} 
@@ -322,10 +309,6 @@ public class Vertex<K extends Comparable<K>,V  extends Comparable <V>> implement
 			{
 				e.printStackTrace();
 			}
-			
 		}
 	}
-	
-	
-	
 }

@@ -1,7 +1,7 @@
 package model.data_structures;
 
-public class Edge <K extends Comparable<K>, V extends Comparable <V>> implements Comparable <Edge<K, V>>
-{
+public class Edge<K extends Comparable<K>, V extends Comparable<V>> implements Comparable<Edge<K, V>> {
+
 	private Vertex<K, V> source;
 	private Vertex<K, V> destination;
 	private float weight;
@@ -16,17 +16,12 @@ public class Edge <K extends Comparable<K>, V extends Comparable <V>> implements
 	{
 		return source;
 	}
-	
+
 	public Vertex<K,V> getDestination()
 	{
 		return destination;
 	}
-	
-	public float weight()
-	{
-		return weight;
-	}
-	
+
 	public void setWeight(float weight)
 	{
 		this.weight= weight;
@@ -38,10 +33,9 @@ public class Edge <K extends Comparable<K>, V extends Comparable <V>> implements
 	}
 
 	@Override
-	public int compareTo(Edge o) 
-	{
-		// TODO Auto-generated method stub
-		return 0;
+	public int compareTo(Edge<K, V> otherEdge) {
+		// Comparación basada en el peso de las aristas
+		return Float.compare(this.weight, otherEdge.getWeight());
 	}
 }
 
