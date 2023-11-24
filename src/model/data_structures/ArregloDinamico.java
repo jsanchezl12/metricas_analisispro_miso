@@ -1,6 +1,7 @@
 package model.data_structures;
 
 
+import java.util.Arrays;
 
 public class ArregloDinamico<T extends Comparable<T>> implements ILista<T> {
 		/**
@@ -197,24 +198,7 @@ public class ArregloDinamico<T extends Comparable<T>> implements ILista<T> {
 				}
 				else
 				{
-					if ( tamanoAct == tamanoMax )
-		            {
-		                 tamanoMax = 2 * tamanoMax; 
-		            }
-		            T [ ] copia = elementos;
-		            elementos = (T[])new Comparable[tamanoMax];
-		            
-		            for (int i=0; i<pos-1; i++)
-		            {
-		            	elementos[i]= copia[i];
-		            }
-		            
-		            elementos[pos-1]=elemento;
-		            
-		            for(int i=pos; i<tamanoAct; i++)
-		            {
-		            	elementos[i]=copia[i-1];
-		            }
+					addElementos(elemento, pos);
 				}
 				
 				tamanoAct++;
@@ -222,6 +206,26 @@ public class ArregloDinamico<T extends Comparable<T>> implements ILista<T> {
 			
 		}
 
+		private void addElementos(T elemento, int pos){
+			if ( tamanoAct == tamanoMax )
+			{
+				tamanoMax = 2 * tamanoMax;
+			}
+			T [ ] copia = elementos;
+			elementos = Arrays.copyOf(elementos, tamanoMax);
+
+			for (int i=0; i<pos-1; i++)
+			{
+				elementos[i]= copia[i];
+			}
+
+			elementos[pos-1]=elemento;
+
+			for(int i=pos; i<tamanoAct; i++)
+			{
+				elementos[i]=copia[i-1];
+			}
+		}
 
 		//Siempre se llama a insert o a delete primero, esos métodos manejan los casos de que el elemento sea null, 
 		//isEmpty o que la posición no sea válida
